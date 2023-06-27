@@ -80,5 +80,4 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'githubactiontestgrant'
-          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E0AD4A5845554BC9A47396316D5B68DA }}
