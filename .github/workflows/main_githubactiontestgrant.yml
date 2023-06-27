@@ -22,6 +22,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Set up Python version
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          
+      - name: Install dependencies
+        run: pip install -r app/backend/requirements.txt
+      
+            
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -36,36 +50,14 @@ jobs:
           npm run build
       
       - name: Zip artifact for deployment
-        run: zip release.zip ./app/backend/* -r
+        run: zip release.zip ./app/* -r
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
           path: release.zip
-          
-      - name: Set up Python version
-        uses: actions/setup-python@v1
-        with:
-          python-version: '3.10'
-
-      - name: Create and start virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          
-      - name: Install dependencies
-        run: pip install -r app/backend/requirements.txt
-      
-      - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v2
-        with:
-          name: python-app
-          path: | 
-            ./app/backend
-            !venv/
-      
-
+    
 
   deploy:
     runs-on: ubuntu-latest
@@ -74,13 +66,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: python-app
-          path: ./app/backend
-        
+    steps:        
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
