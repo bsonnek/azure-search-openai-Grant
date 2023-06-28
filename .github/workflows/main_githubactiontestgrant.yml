@@ -30,8 +30,8 @@ jobs:
       - name: Create and start virtual environment
         working-directory: app/backend
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          python -m venv backend/backend_env
+          source backend_env/bin/activate
           
       - name: Install dependencies
         working-directory: app/backend
