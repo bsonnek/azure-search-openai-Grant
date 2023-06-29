@@ -36,6 +36,7 @@ jobs:
           npm run build
       
       - name: Zip artifact for deployment
+        working-directory: app/frontend
         run: zip release.zip ./* -r
           
       - name: Upload artifact for deployment job
@@ -43,6 +44,14 @@ jobs:
         with:
           name: node-app
           path: release.zip
+      
+      - name: Upload artifact for Python
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-app
+          path: | 
+            ./app/backend
+            !venv/
      
   deploy:
     runs-on: ubuntu-latest
@@ -52,7 +61,12 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-        
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: python-app
+          path: .
+          
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
