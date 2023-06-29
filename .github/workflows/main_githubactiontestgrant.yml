@@ -21,7 +21,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-    
+      
+      - name: Set up Python version
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+
+      - name: Create and start virtual environment
+        working-directory: app/backend
+        run: |
+          python -m venv backend_env
+          source backend_env/bin/activate
+          
+      - name: Install dependencies
+        working-directory: app/backend
+        run: pip install -r requirements.txt
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -36,7 +50,7 @@ jobs:
           npm run build
       
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip release.zip ./app/backend* -r
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
